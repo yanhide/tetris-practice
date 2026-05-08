@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シンプル テトリス</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-wrapper">
+    <section class="game-panel" aria-labelledby="game-title">
+      <h1 id="game-title">シンプル テトリス</h1>
+      <p class="lead">キーボードでブロックを動かして、横一列をそろえて消しましょう。</p>
+
+      <!-- canvas は JavaScript でブロックを描くための画面です -->
+      <canvas id="game" width="300" height="600" aria-label="テトリスのゲーム画面"></canvas>
+
+      <div class="status-row">
+        <p>スコア: <span id="score">0</span></p>
+        <p id="message" class="message">Enter でスタート</p>
+      </div>
+
+      <button id="start-button" type="button">ゲーム開始 / リスタート</button>
+    </section>
+
+    <aside class="how-to-play" aria-labelledby="how-to-title">
+      <h2 id="how-to-title">操作方法</h2>
+      <ul>
+        <li><kbd>←</kbd> / <kbd>→</kbd>: 左右に移動</li>
+        <li><kbd>↑</kbd>: 回転</li>
+        <li><kbd>↓</kbd>: 1マス下に移動</li>
+        <li><kbd>Enter</kbd>: ゲーム開始 / リスタート</li>
+      </ul>
+      <p>ブロックが上まで積み上がるとゲームオーバーです。</p>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
