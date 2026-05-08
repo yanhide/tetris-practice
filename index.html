@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シンプル テトリス</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-wrapper">
+    <section class="game-panel" aria-labelledby="game-title">
+      <h1 id="game-title">シンプル テトリス</h1>
+      <p class="lead">次ブロック、アイテム、お邪魔ブロックつき。横一列をそろえて消しましょう。</p>
+
+      <div class="play-area">
+        <div class="board-area">
+          <!-- canvas は JavaScript でブロックを描くための画面です -->
+          <canvas id="game" width="300" height="600" aria-label="テトリスのゲーム画面"></canvas>
+          <div id="effect-banner" class="effect-banner" aria-live="polite"></div>
+        </div>
+
+        <aside class="side-panel" aria-label="ゲーム情報">
+          <section class="next-box" aria-labelledby="next-title">
+            <h2 id="next-title">次のブロック</h2>
+            <canvas id="next" width="120" height="120" aria-label="次に来るブロック"></canvas>
+          </section>
+
+          <section class="mini-status" aria-labelledby="status-title">
+            <h2 id="status-title">状態</h2>
+            <p>スコア: <span id="score">0</span></p>
+            <p>お邪魔: <span id="garbage-countdown">--</span></p>
+            <p>時間停止: <span id="freeze-countdown">なし</span></p>
+          </section>
+
+          <section class="item-guide" aria-labelledby="item-title">
+            <h2 id="item-title">アイテム</h2>
+            <ul>
+              <li><span class="item-chip bomb">B</span> 爆弾: 周囲を消す</li>
+              <li><span class="item-chip line">L</span> 1列消去: 着地した行を消す</li>
+              <li><span class="item-chip freeze">T</span> 時間停止: お邪魔を止める</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+
+      <div class="status-row">
+        <p id="message" class="message">Enter でスタート</p>
+      </div>
+
+      <button id="start-button" type="button">ゲーム開始</button>
+    </section>
+
+    <aside class="how-to-play" aria-labelledby="how-to-title">
+      <h2 id="how-to-title">操作方法</h2>
+      <ul>
+        <li><kbd>←</kbd> / <kbd>→</kbd>: 左右に移動</li>
+        <li><kbd>↑</kbd> / <kbd>Space</kbd>: 回転</li>
+        <li><kbd>↓</kbd>: 1マス下に移動</li>
+        <li><kbd>Enter</kbd>: 開始 / 一時停止 / 再開</li>
+      </ul>
+      <p>一定時間ごとに下からお邪魔ブロックがせり上がります。4ライン同時消しは特別エフェクトが出ます。</p>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
