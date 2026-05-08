@@ -12,29 +12,15 @@
       <h1 id="game-title">シンプル テトリス</h1>
       <p class="lead">キーボードでブロックを動かして、横一列をそろえて消しましょう。</p>
 
-      <div class="play-area">
-        <div class="board-area">
-          <!-- メインのゲーム画面です。JavaScript がここにブロックを描きます。 -->
-          <canvas id="game" width="300" height="600" aria-label="テトリスのゲーム画面"></canvas>
-          <div id="effect-banner" class="effect-banner" aria-live="polite"></div>
-        </div>
-
-        <aside class="next-panel" aria-labelledby="next-title">
-          <h2 id="next-title">次のブロック</h2>
-          <!-- 次に来るブロックだけを小さく描くための画面です。 -->
-          <canvas id="next" width="120" height="120" aria-label="次に来るブロック"></canvas>
-        </aside>
-      </div>
+      <!-- canvas は JavaScript でブロックを描くための画面です -->
+      <canvas id="game" width="300" height="600" aria-label="テトリスのゲーム画面"></canvas>
 
       <div class="status-row">
         <p>スコア: <span id="score">0</span></p>
         <p id="message" class="message">Enter でスタート</p>
       </div>
 
-      <div class="button-row">
-        <button id="start-button" type="button">ゲーム開始 / リスタート</button>
-        <button id="pause-button" type="button" disabled>一時停止</button>
-      </div>
+      <button id="start-button" type="button">ゲーム開始 / リスタート</button>
     </section>
 
     <aside class="how-to-play" aria-labelledby="how-to-title">
@@ -43,9 +29,9 @@
         <li><kbd>←</kbd> / <kbd>→</kbd>: 左右に移動</li>
         <li><kbd>↑</kbd> / <kbd>Space</kbd>: 回転</li>
         <li><kbd>↓</kbd>: 1マス下に移動</li>
-        <li><kbd>Enter</kbd>: ゲーム開始 / 一時停止 / 再開</li>
+        <li><kbd>Enter</kbd>: ゲーム開始 / リスタート</li>
       </ul>
-      <p>ブロックが上まで積み上がるとゲームオーバーです。4ライン同時に消すと「TETRIS!」と表示されます。</p>
+      <p>ブロックが上まで積み上がるとゲームオーバーです。</p>
     </aside>
   </main>
 

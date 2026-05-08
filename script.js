@@ -1,21 +1,15 @@
 // ====== HTML の要素を取得 ======
 const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
-const nextCanvas = document.getElementById('next');
-const nextContext = nextCanvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const messageElement = document.getElementById('message');
 const startButton = document.getElementById('start-button');
-const pauseButton = document.getElementById('pause-button');
-const effectBanner = document.getElementById('effect-banner');
 
 // ====== ゲームの基本設定 ======
 const COLS = 10; // 盤面の横マス数
 const ROWS = 20; // 盤面の縦マス数
 const BLOCK_SIZE = 30; // 1マスの大きさ（px）
-const NEXT_BLOCK_SIZE = 24; // 次ブロック表示用の1マスの大きさ（px）
 const EMPTY = 0; // 盤面が空のときの値
-const DROP_SPEED = 700; // ブロックが自動で落ちる間隔（ミリ秒）
 
 // テトリミノ（落ちてくるブロック）の形と色です。
 // 1 はブロックあり、0 は空白を表します。
@@ -87,12 +81,11 @@ const TETROMINOES = [
 
 let board;
 let currentPiece;
-let nextPiece;
 let score;
 let isGameOver;
 let isRunning;
-let isPaused;
 let dropTimerId;
+let lastDropSpeed;
 
 // ====== 初期表示 ======
 resetGame();
@@ -102,18 +95,12 @@ draw();
 function resetGame() {
   board = createBoard();
   currentPiece = createPiece();
-  nextPiece = createPiece();
   score = 0;
   isGameOver = false;
   isRunning = false;
-  isPaused = false;
+  lastDropSpeed = 700; // ブロックが自動で落ちる間隔（ミリ秒）
   scoreElement.textContent = score;
   messageElement.textContent = 'Enter でスタート';
-  startButton.textContent = 'ゲーム開始 / リスタート';
-  pauseButton.textContent = '一時停止';
-  pauseButton.disabled = true;
-  effectBanner.classList.remove('show');
-  canvas.classList.remove('tetris-flash');
   stopDropTimer();
 }
 
@@ -137,18 +124,20 @@ function createPiece() {
 
 // ====== ゲーム開始 / リスタート ======
 function startGame() {
-  // 既存の「ゲーム開始 / リスタート」動作は残し、押したら最初から始めます。
-  resetGame();
+  // プレイ中やゲームオーバー後に押した場合は、最初からやり直します。
+  if (isRunning || isGameOver) {
+    resetGame();
+  }
+
   isRunning = true;
   messageElement.textContent = 'プレイ中';
-  pauseButton.disabled = false;
   startDropTimer();
   draw();
 }
 
 function startDropTimer() {
   stopDropTimer();
-  dropTimerId = setInterval(moveDown, DROP_SPEED);
+  dropTimerId = setInterval(moveDown, lastDropSpeed);
 }
 
 function stopDropTimer() {
@@ -158,55 +147,16 @@ function stopDropTimer() {
   }
 }
 
-// ====== 一時停止 / 再開 ======
-function togglePause() {
-  // ゲームオーバー後にEnterが押されたら、最初から再挑戦します。
-  if (isGameOver) {
-    startGame();
-    return;
-  }
-
-  // まだ開始していない状態でEnterが押されたら、ゲームを開始します。
-  if (!isRunning && !isPaused) {
-    startGame();
-    return;
-  }
-
-  if (isRunning) {
-    pauseGame();
-  } else {
-    resumeGame();
-  }
-}
-
-function pauseGame() {
-  isRunning = false;
-  isPaused = true;
-  stopDropTimer();
-  messageElement.textContent = '一時停止中（Enter またはボタンで再開）';
-  pauseButton.textContent = '再開';
-}
-
-function resumeGame() {
-  isRunning = true;
-  isPaused = false;
-  messageElement.textContent = 'プレイ中';
-  pauseButton.textContent = '一時停止';
-  startDropTimer();
-  draw();
-}
-
 // ====== 描画処理 ======
 function draw() {
-  clearCanvas(context, canvas);
+  clearCanvas();
   drawBoard();
-  drawPiece(context, currentPiece, BLOCK_SIZE);
-  drawNextPiece();
+  drawPiece(currentPiece);
 }
 
-function clearCanvas(targetContext, targetCanvas) {
-  targetContext.fillStyle = '#020617';
-  targetContext.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+function clearCanvas() {
+  context.fillStyle = '#020617';
+  context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 // 固定済みのブロックとグリッド線を描きます。
@@ -214,49 +164,36 @@ function drawBoard() {
   for (let y = 0; y < ROWS; y++) {
     for (let x = 0; x < COLS; x++) {
       if (board[y][x] !== EMPTY) {
-        drawBlock(context, x, y, board[y][x], BLOCK_SIZE);
+        drawBlock(x, y, board[y][x]);
       }
-      drawGridLine(context, x, y, BLOCK_SIZE);
+      drawGridLine(x, y);
     }
   }
 }
 
 // 落下中のブロックを描きます。
-function drawPiece(targetContext, piece, size) {
+function drawPiece(piece) {
   piece.matrix.forEach((row, rowIndex) => {
     row.forEach((value, colIndex) => {
       if (value) {
-        drawBlock(targetContext, piece.x + colIndex, piece.y + rowIndex, piece.color, size);
+        drawBlock(piece.x + colIndex, piece.y + rowIndex, piece.color);
       }
     });
   });
 }
 
-function drawNextPiece() {
-  clearCanvas(nextContext, nextCanvas);
-
-  // 次ブロック用canvasの中央に表示するため、一時的な座標を作ります。
-  const previewPiece = {
-    ...nextPiece,
-    x: Math.floor((nextCanvas.width / NEXT_BLOCK_SIZE - nextPiece.matrix[0].length) / 2),
-    y: Math.floor((nextCanvas.height / NEXT_BLOCK_SIZE - nextPiece.matrix.length) / 2)
-  };
-
-  drawPiece(nextContext, previewPiece, NEXT_BLOCK_SIZE);
+function drawBlock(x, y, color) {
+  context.fillStyle = color;
+  context.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+  context.strokeStyle = 'rgba(15, 23, 42, 0.55)';
+  context.lineWidth = 2;
+  context.strokeRect(x * BLOCK_SIZE + 1, y * BLOCK_SIZE + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
 }
 
-function drawBlock(targetContext, x, y, color, size) {
-  targetContext.fillStyle = color;
-  targetContext.fillRect(x * size, y * size, size, size);
-  targetContext.strokeStyle = 'rgba(15, 23, 42, 0.55)';
-  targetContext.lineWidth = 2;
-  targetContext.strokeRect(x * size + 1, y * size + 1, size - 2, size - 2);
-}
-
-function drawGridLine(targetContext, x, y, size) {
-  targetContext.strokeStyle = 'rgba(148, 163, 184, 0.16)';
-  targetContext.lineWidth = 1;
-  targetContext.strokeRect(x * size, y * size, size, size);
+function drawGridLine(x, y) {
+  context.strokeStyle = 'rgba(148, 163, 184, 0.16)';
+  context.lineWidth = 1;
+  context.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 }
 
 // ====== 移動・回転 ======
@@ -280,8 +217,7 @@ function moveDown() {
     currentPiece.y -= 1;
     mergePieceToBoard();
     clearLines();
-    currentPiece = nextPiece;
-    nextPiece = createPiece();
+    currentPiece = createPiece();
 
     // 新しいブロックが置けないならゲームオーバーです。
     if (hasCollision(currentPiece)) {
@@ -381,43 +317,21 @@ function clearLines() {
     score += clearedLines * clearedLines * 100;
     scoreElement.textContent = score;
   }
-
-  // 4ライン同時消しのときだけ、特別な「TETRIS!」演出を出します。
-  if (clearedLines === 4) {
-    showTetrisEffect();
-  }
-}
-
-function showTetrisEffect() {
-  effectBanner.textContent = 'TETRIS!';
-  effectBanner.classList.remove('show');
-  canvas.classList.remove('tetris-flash');
-
-  // classを付け直すと、連続で4ライン消しをしても毎回アニメーションします。
-  requestAnimationFrame(() => {
-    effectBanner.classList.add('show');
-    canvas.classList.add('tetris-flash');
-  });
-
-  messageElement.textContent = 'TETRIS! 4ライン消し！';
 }
 
 // ====== ゲームオーバー ======
 function finishGame() {
   isRunning = false;
-  isPaused = false;
   isGameOver = true;
   stopDropTimer();
   messageElement.textContent = 'ゲームオーバー！Enter で再挑戦';
-  pauseButton.textContent = '一時停止';
-  pauseButton.disabled = true;
   draw();
 }
 
 // ====== キーボードとボタンの操作 ======
 document.addEventListener('keydown', event => {
   if (event.key === 'Enter') {
-    togglePause();
+    startGame();
     return;
   }
 
@@ -440,4 +354,3 @@ document.addEventListener('keydown', event => {
 });
 
 startButton.addEventListener('click', startGame);
-pauseButton.addEventListener('click', togglePause);
