@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シンプル テトリス</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="game-card" aria-labelledby="title">
+      <h1 id="title">シンプル テトリス</h1>
+      <p class="lead">矢印キーとスペースキーで操作する、ブラウザだけで遊べるテトリスです。</p>
+
+      <div class="game-layout">
+        <!-- JavaScript がこの canvas に盤面とブロックを描きます -->
+        <canvas id="game" width="300" height="600" aria-label="テトリスのゲーム画面"></canvas>
+
+        <aside class="side-panel" aria-label="ゲーム情報">
+          <p class="score-label">スコア</p>
+          <p id="score" class="score">0</p>
+          <p id="message" class="message">ゲーム開始を押してください</p>
+          <button id="restart-button" type="button">ゲーム開始 / リスタート</button>
+        </aside>
+      </div>
+    </section>
+
+    <section class="help-card" aria-labelledby="controls-title">
+      <h2 id="controls-title">操作方法</h2>
+      <ul>
+        <li><kbd>←</kbd> / <kbd>→</kbd>: 左右に移動</li>
+        <li><kbd>↓</kbd>: 早く落とす</li>
+        <li><kbd>Space</kbd>: 回転</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
