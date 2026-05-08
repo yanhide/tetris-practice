@@ -8,7 +8,7 @@ body {
   min-height: 100vh;
   font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
   color: #f8fafc;
-  background: radial-gradient(circle at top left, #334155, #111827 42%, #020617);
+  background: linear-gradient(135deg, #111827, #1e293b);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,13 +20,13 @@ body {
   display: flex;
   gap: 24px;
   align-items: flex-start;
-  max-width: 1040px;
+  max-width: 920px;
   width: 100%;
 }
 
 .game-panel,
 .how-to-play {
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.88);
   border: 1px solid rgba(148, 163, 184, 0.3);
   border-radius: 18px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
@@ -43,20 +43,18 @@ p {
   margin-top: 0;
 }
 
-h2 {
-  font-size: 1.05rem;
-}
-
 .lead {
   color: #cbd5e1;
   line-height: 1.7;
 }
 
+/* ゲーム盤面と次ブロック表示を横に並べます */
 .play-area {
   display: flex;
   justify-content: center;
-  gap: 18px;
   align-items: flex-start;
+  gap: 18px;
+  margin: 18px auto;
 }
 
 .board-area {
@@ -73,17 +71,36 @@ h2 {
   border-radius: 10px;
 }
 
-/* 4ライン消しなどのメッセージを盤面の上に表示します */
+.next-panel {
+  width: 160px;
+  text-align: center;
+  background: rgba(30, 41, 59, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+#next {
+  display: block;
+  width: 120px;
+  height: 120px;
+  background: #020617;
+  border: 2px solid rgba(125, 211, 252, 0.75);
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+/* 4ライン消しのときに、盤面中央へ短い演出を重ねます */
 .effect-banner {
   position: absolute;
-  inset: 42% 12px auto;
+  inset: 42% 14px auto;
   min-height: 58px;
   border-radius: 14px;
   display: grid;
   place-items: center;
   pointer-events: none;
   color: #fff7ed;
-  font-size: 1.55rem;
+  font-size: 1.6rem;
   font-weight: 900;
   text-shadow: 0 3px 12px rgba(0, 0, 0, 0.55);
   opacity: 0;
@@ -92,96 +109,22 @@ h2 {
 
 .effect-banner.show {
   animation: pop-effect 1.25s ease-out;
-  background: linear-gradient(90deg, rgba(251, 146, 60, 0.9), rgba(236, 72, 153, 0.9), rgba(56, 189, 248, 0.9));
+  background: linear-gradient(90deg, rgba(251, 146, 60, 0.94), rgba(236, 72, 153, 0.94), rgba(56, 189, 248, 0.94));
 }
 
-/* 4ライン消しのときに盤面の枠も光らせます */
 #game.tetris-flash {
   animation: board-flash 0.7s ease-in-out 2;
 }
 
-.side-panel {
-  display: grid;
-  gap: 14px;
-  width: 190px;
-  text-align: left;
-}
-
-.next-box,
-.mini-status,
-.item-guide {
-  background: rgba(30, 41, 59, 0.86);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 14px;
-  padding: 14px;
-}
-
-#next {
-  display: block;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto;
-  background: #020617;
-  border: 2px solid rgba(125, 211, 252, 0.75);
-  border-radius: 10px;
-}
-
-.mini-status p {
-  margin-bottom: 8px;
-  font-weight: bold;
-}
-
-.item-guide ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-.item-guide li {
-  margin-bottom: 8px;
-}
-
-.item-chip {
-  display: inline-grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
-  color: #020617;
-  font-weight: 900;
-  margin-right: 4px;
-}
-
-.item-chip.bomb {
-  background: #f43f5e;
-}
-
-.item-chip.line {
-  background: #fbbf24;
-}
-
-.item-chip.freeze {
-  background: #67e8f9;
-}
-
 .status-row {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap: 16px;
   font-weight: bold;
-  margin-top: 18px;
 }
 
 .message {
   color: #facc15;
-  margin-bottom: 0;
-}
-
-.button-row {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr 1fr;
-  margin-top: 16px;
 }
 
 button {
@@ -197,20 +140,10 @@ button {
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
-.secondary-button {
-  background: #cbd5e1;
-  color: #0f172a;
-}
-
 button:hover,
 button:focus-visible {
   background: #7dd3fc;
   transform: translateY(-1px);
-}
-
-.secondary-button:hover,
-.secondary-button:focus-visible {
-  background: #f8fafc;
 }
 
 .how-to-play {
@@ -233,18 +166,18 @@ kbd {
 @keyframes pop-effect {
   0% {
     opacity: 0;
-    transform: translateY(18px) scale(0.82) rotate(-2deg);
+    transform: translateY(18px) scale(0.82);
   }
 
   20%,
-  74% {
+  72% {
     opacity: 1;
-    transform: translateY(0) scale(1.03) rotate(0deg);
+    transform: translateY(0) scale(1.04);
   }
 
   100% {
     opacity: 0;
-    transform: translateY(-18px) scale(0.9) rotate(2deg);
+    transform: translateY(-18px) scale(0.9);
   }
 }
 
@@ -255,13 +188,13 @@ kbd {
   }
 
   50% {
-    box-shadow: 0 0 34px rgba(250, 204, 21, 0.95);
     border-color: #facc15;
+    box-shadow: 0 0 34px rgba(250, 204, 21, 0.95);
   }
 }
 
 /* 画面が狭いときは縦並びにします */
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   body {
     align-items: flex-start;
   }
@@ -274,15 +207,7 @@ kbd {
 
   .game-panel,
   .how-to-play,
-  .side-panel {
+  .next-panel {
     width: 100%;
-  }
-
-  .button-row {
-    grid-template-columns: 1fr;
-  }
-
-  .side-panel {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
 }
