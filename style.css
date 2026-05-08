@@ -177,6 +177,13 @@ h2 {
   margin-bottom: 0;
 }
 
+.button-row {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 16px;
+}
+
 button {
   width: 100%;
   border: 0;
@@ -186,15 +193,24 @@ button {
   cursor: pointer;
   font-size: 1rem;
   font-weight: bold;
-  margin-top: 16px;
   padding: 12px 18px;
   transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.secondary-button {
+  background: #cbd5e1;
+  color: #0f172a;
 }
 
 button:hover,
 button:focus-visible {
   background: #7dd3fc;
   transform: translateY(-1px);
+}
+
+.secondary-button:hover,
+.secondary-button:focus-visible {
+  background: #f8fafc;
 }
 
 .how-to-play {
@@ -260,6 +276,10 @@ kbd {
   .how-to-play,
   .side-panel {
     width: 100%;
+  }
+
+  .button-row {
+    grid-template-columns: 1fr;
   }
 
   .side-panel {

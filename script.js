@@ -6,6 +6,7 @@ const nextContext = nextCanvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const messageElement = document.getElementById('message');
 const startButton = document.getElementById('start-button');
+const restartButton = document.getElementById('restart-button');
 const effectBanner = document.getElementById('effect-banner');
 const garbageCountdownElement = document.getElementById('garbage-countdown');
 const freezeCountdownElement = document.getElementById('freeze-countdown');
@@ -210,6 +211,13 @@ function resumeGame() {
   messageElement.textContent = 'プレイ中';
   startButton.textContent = '一時停止';
   startTimers();
+  draw();
+}
+
+// mainブランチにあった「リスタート」動作も壊さないよう、専用ボタンで残します。
+function restartGame() {
+  resetGame();
+  startGame();
 }
 
 function startTimers() {
@@ -605,3 +613,4 @@ document.addEventListener('keydown', event => {
 });
 
 startButton.addEventListener('click', handleStartButton);
+restartButton.addEventListener('click', restartGame);
